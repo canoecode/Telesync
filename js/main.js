@@ -1,4 +1,4 @@
-// TeleSync — shared behaviour: mobile nav, icons, scroll reveal
+// TeleSync — shared behaviour: mobile nav, icons, photo lightbox, scroll reveal
 (function () {
   document.documentElement.classList.add('js');
 
@@ -40,8 +40,52 @@
     layers: 'M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5',
     building: 'M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1',
     send: 'M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z',
-    device: 'M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM9 6h6v6H9zM10 17h.01M14 17h.01'
+    device: 'M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zM9 6h6v6H9zM10 17h.01M14 17h.01',
+    close: 'M18 6 6 18M6 6l12 12',
+    prev: 'M15 18l-6-6 6-6',
+    next: 'M9 18l6-6-6-6'
   };
+
+  // photo lightbox: <a href="large.webp" data-lightbox data-caption="...">
+  var shots = Array.prototype.slice.call(document.querySelectorAll('[data-lightbox]'));
+  if (shots.length && window.HTMLDialogElement) {
+    var box = document.createElement('dialog');
+    box.className = 'lightbox';
+    box.setAttribute('aria-label', 'Photo viewer');
+    box.innerHTML =
+      '<button class="lb-btn lb-close" aria-label="Close"><span data-icon="close"></span></button>' +
+      '<button class="lb-btn lb-prev" aria-label="Previous photo"><span data-icon="prev"></span></button>' +
+      '<figure><img alt=""><figcaption></figcaption></figure>' +
+      '<button class="lb-btn lb-next" aria-label="Next photo"><span data-icon="next"></span></button>';
+    document.body.appendChild(box);
+    var boxImg = box.querySelector('img');
+    var boxCap = box.querySelector('figcaption');
+    var current = 0;
+    var show = function (i) {
+      current = (i + shots.length) % shots.length;
+      var a = shots[current];
+      boxImg.src = a.getAttribute('href');
+      boxImg.alt = a.querySelector('img').alt;
+      boxCap.textContent = a.getAttribute('data-caption') || '';
+    };
+    shots.forEach(function (a, i) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        show(i);
+        box.showModal();
+      });
+    });
+    box.querySelector('.lb-close').addEventListener('click', function () { box.close(); });
+    box.querySelector('.lb-prev').addEventListener('click', function () { show(current - 1); });
+    box.querySelector('.lb-next').addEventListener('click', function () { show(current + 1); });
+    box.addEventListener('click', function (e) { if (e.target === box || e.target.tagName === 'FIGURE') box.close(); });
+    box.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+    box.addEventListener('close', function () { shots[current].focus(); });
+  }
+
   document.querySelectorAll('[data-icon]').forEach(function (el) {
     var d = ICONS[el.getAttribute('data-icon')];
     if (!d) return;
