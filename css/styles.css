@@ -244,6 +244,10 @@ strong { font-weight: 600; }
 .media-contain img { width: auto; height: auto; max-height: 360px; object-fit: contain; }
 .media-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; margin-top: 40px; }
 .media-pair .media { aspect-ratio: 3 / 2; }
+.intro-split { grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); margin-top: 8px; }
+.video-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; max-width: 520px; width: 100%; justify-self: center; }
+.video-frame { aspect-ratio: 9 / 16; background: #0d1530; }
+.video-frame video { display: block; width: 100%; height: 100%; object-fit: cover; }
 figure { margin: 0; }
 figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted); text-align: center; }
 
@@ -552,7 +556,7 @@ html:has(.lightbox[open]) { overflow: hidden; }
 @media (max-width: 1000px) {
   .g4, .g5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .split, .split-wide { grid-template-columns: 1fr; gap: 32px; }
+  .split, .split-wide, .intro-split { grid-template-columns: 1fr; gap: 32px; }
   .hero-grid { grid-template-columns: 1fr 1fr; }
   .hero-copy { grid-column: 1 / -1; order: -1; }
   .hero-device img, .hero-phone img { max-height: 360px; }
@@ -580,6 +584,7 @@ html:has(.lightbox[open]) { overflow: hidden; }
   .section { padding: 46px 0; }
   .hero { padding: 34px 0 46px; }
   .g2, .g3, .g4, .g5, .media-pair { grid-template-columns: 1fr; }
+  .video-pair { gap: 12px; }
   .hero-device img, .hero-phone img { max-height: 270px; }
   .brand img { height: 36px; }
   .site-header .wrap { min-height: 66px; }
